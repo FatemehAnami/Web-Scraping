@@ -16,7 +16,8 @@ class ArticlesUrlsSpider(scrapy.Spider):
     name = 'articles_urls'
 
     def start_requests(self):
-        df = pd.read_excel('Input.xlsx')
+        df = pd.read_excel('Input.xlsx') # it is your excel file which has 2 columns IDs and URLs of sites.
+        # Store IDs and URLs in 2 different lists
         for i in range(len(df)):
             url = df['URL'][i]
             url_id = df['URL_ID'][i]
@@ -24,15 +25,16 @@ class ArticlesUrlsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, dont_filter=True, meta = {'url_id' : url_id}) 
 
     def parse(self, response):
-        # Extracting the content using css selectors
+        # Extracting the title and body using css selectors (based on my sites title store in <title> tag and body store in <p> tag)
         title = response.css('title::text').extract()
         body = response.css('p::text').extract()
         scraped_info= str(title) + str(body)
+        # name of the .txt file should be ID of each URL
         name = response.meta['url_id']
         filename = f'{name}.txt'
+        # create a file and save scrapped data in it.
         with open(filename, 'xt', encoding='UTF-8', errors='ignore') as file:
-            file.write(scraped_info)
-        
+            file.write(scraped_info)        
 
 if __name__ == '__main__':
     start = dt.datetime.now()
