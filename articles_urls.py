@@ -4,14 +4,20 @@ For loading and reading URLs we use Scrapy library.
 """
 
 import scrapy
+from scrapy.spiders import CrawlSpider, Rule
+from scrapy.crawler import CrawlerProcess
 import pandas as pd 
 import datetime as dt
 import sys
 
 def main():
-    spider = ArticlesUrlsSpider()
-
     
+    spider = CrawlerProcess({
+       # If you want to change Setting file you should put them here as Dict data type
+       })
+   spider.crawl(ArticlesUrlsSpider)
+   spider.start() 
+  
 class ArticlesUrlsSpider(scrapy.Spider):
     name = 'articles_urls'
 
@@ -31,7 +37,7 @@ class ArticlesUrlsSpider(scrapy.Spider):
         scraped_info= str(title) + str(body)
         # name of the .txt file should be ID of each URL
         name = response.meta['url_id']
-        filename = f'{name}.txt'
+        filename = f'Scrapedfile\{name}.txt'
         # create a file and save scrapped data in it.
         with open(filename, 'xt', encoding='UTF-8', errors='ignore') as file:
             file.write(scraped_info)        
